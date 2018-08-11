@@ -21,7 +21,7 @@
 				}else if(req.status == 401){
 					document.location = '/';
 				}else{
-					alert('Что-то пошло не так!');
+					alert('Something went wrong!');
 				}
 			}
 		}

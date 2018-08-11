@@ -30,11 +30,11 @@ func httpServer() {
 
 	err := http.ListenAndServe(":"+options.HttpServerPort, nil)
 	if err != nil {
-		logAdd(MESS_ERROR, "webServer не смог занять порт: "+fmt.Sprint(err))
+		logAdd(MESS_ERROR, "webServer could not take port: "+fmt.Sprint(err))
 	}
 }
 
-//хэндлеры для профиля
+//handles for profile
 func handleProfileWelcome(w http.ResponseWriter, r *http.Request) {
 
 	file, _ := os.Open("resource/profile/welcome.html")
@@ -67,7 +67,7 @@ func handleProfileMy(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-//хэндлеры для админки
+//handlers for admin
 func handleWelcome(w http.ResponseWriter, r *http.Request) {
 
 	file, _ := os.Open("resource/admin/welcome.html")
@@ -92,7 +92,7 @@ func handleResources(w http.ResponseWriter, r *http.Request) {
 
 	var buf1 string
 	if options.Mode == MASTER {
-		connectionsString = connectionsString + fmt.Sprintln("\n\nагенты:")
+		connectionsString = connectionsString + fmt.Sprintln("\n\nagents:")
 		nodes.Range(func(key interface{}, value interface{}) bool {
 			agent := value.(*Node)
 			connectionsString = connectionsString + fmt.Sprintln(agent.Id, agent.Ip, "\t", agent.Name)
@@ -100,7 +100,7 @@ func handleResources(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 
-	connectionsString = connectionsString + fmt.Sprintln("\n\nклиенты:")
+	connectionsString = connectionsString + fmt.Sprintln("\n\ncustomers:")
 	clients.Range(func(key interface{}, value interface{}) bool {
 
 		if value.(*Client).Profile == nil {
@@ -114,7 +114,7 @@ func handleResources(w http.ResponseWriter, r *http.Request) {
 		value.(*Client).profiles.Range(func(k interface{}, v interface{}) bool {
 
 			var capt string
-			c := getContactByPid(v.(*Profile).Contacts, cleanPid(value.(*Client).Pid)) //todo потом убрать, лишние итерации не сильно нам интересны
+			c := getContactByPid(v.(*Profile).Contacts, cleanPid(value.(*Client).Pid)) //todo then remove, the extra iterations are not very interesting to us
 			if c != nil {
 				capt = fmt.Sprint("/ ", c.Caption)
 			}
@@ -202,31 +202,31 @@ func handleStatistics(w http.ResponseWriter, r *http.Request) {
 		body = pageReplace(body, "$menu", addMenuAdmin())
 
 		charts := getCounterHour()
-		body = pageReplace(body, "$headers01", charts[0]) //по часам
+		body = pageReplace(body, "$headers01", charts[0]) //by the hour
 		body = pageReplace(body, "$values01", charts[1])
 		body = pageReplace(body, "$values02", charts[2])
 		body = pageReplace(body, "$values21", charts[3])
 
 		charts = getCounterDayWeek()
-		body = pageReplace(body, "$headers02", charts[0]) //по дням недели
+		body = pageReplace(body, "$headers02", charts[0]) //by days of the week
 		body = pageReplace(body, "$values03", charts[1])
 		body = pageReplace(body, "$values04", charts[2])
 		body = pageReplace(body, "$values22", charts[3])
 
 		charts = getCounterDay()
-		body = pageReplace(body, "$headers03", charts[0]) //по дням месяца
+		body = pageReplace(body, "$headers03", charts[0]) //by day of the month
 		body = pageReplace(body, "$values05", charts[1])
 		body = pageReplace(body, "$values06", charts[2])
 		body = pageReplace(body, "$values23", charts[3])
 
 		charts = getCounterDayYear()
-		body = pageReplace(body, "$headers04", charts[0]) //по дням года
+		body = pageReplace(body, "$headers04", charts[0]) //by days of the year
 		body = pageReplace(body, "$values07", charts[1])
 		body = pageReplace(body, "$values08", charts[2])
 		body = pageReplace(body, "$values24", charts[3])
 
 		charts = getCounterMonth()
-		body = pageReplace(body, "$headers05", charts[0]) //по месяцам
+		body = pageReplace(body, "$headers05", charts[0]) //by months
 		body = pageReplace(body, "$values09", charts[1])
 		body = pageReplace(body, "$values10", charts[2])
 		body = pageReplace(body, "$values25", charts[3])
@@ -275,7 +275,7 @@ func handleLogs(w http.ResponseWriter, r *http.Request) {
 
 }
 
-//ресурсы и api
+//resources and api
 func handleResource(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, r.URL.Path[1:])
 }
@@ -289,7 +289,7 @@ func handleAPI(w http.ResponseWriter, r *http.Request) {
 			if m.Processing != nil {
 				m.Processing(w, r)
 			} else {
-				logAdd(MESS_INFO, "WEB Нет обработчика для сообщения")
+				logAdd(MESS_INFO, "WEB No handler for message")
 				time.Sleep(time.Millisecond * WAIT_IDLE)
 			}
 			return
@@ -297,18 +297,18 @@ func handleAPI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	time.Sleep(time.Millisecond * WAIT_IDLE)
-	logAdd(MESS_ERROR, "WEB Неизвестное сообщение")
+	logAdd(MESS_ERROR, "WEB Unknown message")
 	http.Error(w, "bad request", http.StatusBadRequest)
 }
 
-//раскрытие api
+//api disclosure
 func processApiDefaultVnc(w http.ResponseWriter, r *http.Request) {
-	logAdd(MESS_INFO, "WEB Запрос vnc версии по-умолчанию")
+	logAdd(MESS_INFO, "WEB Request vnc version by default")
 
 	if len(arrayVnc) < defaultVnc {
 		buff, err := json.Marshal(arrayVnc[defaultVnc])
 		if err != nil {
-			logAdd(MESS_ERROR, "WEB Не получилось отправить версию VNC")
+			logAdd(MESS_ERROR, "WEB The VNC version could not be sent")
 			return
 		}
 		w.Write(buff)
@@ -318,11 +318,11 @@ func processApiDefaultVnc(w http.ResponseWriter, r *http.Request) {
 }
 
 func processApiListVnc(w http.ResponseWriter, r *http.Request) {
-	logAdd(MESS_INFO, "WEB Запрос списка vnc")
+	logAdd(MESS_INFO, "WEB Request a list of vnc")
 
 	buff, err := json.Marshal(arrayVnc)
 	if err != nil {
-		logAdd(MESS_ERROR, "WEB Не получилось отправить список VNC")
+		logAdd(MESS_ERROR, "WEB The VNC list could not be sent")
 		return
 	}
 	w.Write(buff)
@@ -333,7 +333,7 @@ func processApiGetLog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	logAdd(MESS_INFO, "WEB Запрос log")
+	logAdd(MESS_INFO, "WEB Request log")
 	file, _ := os.Open(LOG_NAME)
 	log, err := ioutil.ReadAll(file)
 	if err == nil {
@@ -347,7 +347,7 @@ func processApiClearLog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	logAdd(MESS_INFO, "WEB Запрос очистки log")
+	logAdd(MESS_INFO, "WEB Cleanup request log")
 	if logFile != nil {
 		logFile.Close()
 		logFile = nil
@@ -361,7 +361,7 @@ func processApiProfileSave(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	logAdd(MESS_INFO, "WEB Запрос сохранения профиля "+curProfile.Email)
+	logAdd(MESS_INFO, "WEB Request for saving profile "+curProfile.Email)
 
 	pass1 := string(r.FormValue("abc"))
 	pass2 := string(r.FormValue("def"))
@@ -386,7 +386,7 @@ func processApiProfileGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	logAdd(MESS_INFO, "WEB Запрос информации профиля "+curProfile.Email)
+	logAdd(MESS_INFO, "WEB Request profile information "+curProfile.Email)
 
 	newProfile := *curProfile
 	newProfile.Pass = "*****"
@@ -404,7 +404,7 @@ func processApiSaveOptions(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	logAdd(MESS_INFO, "WEB Запрос сохранения опций")
+	logAdd(MESS_INFO, "WEB Request for saving options")
 
 	saveOptions()
 
@@ -416,9 +416,9 @@ func processApiReload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	logAdd(MESS_INFO, "WEB Запрос на перезапуск сервера")
+	logAdd(MESS_INFO, "WEB Request to restart the server")
 
-	//todo перезапуск
+	//todo restart
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -427,7 +427,7 @@ func processApiOptionsGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	logAdd(MESS_INFO, "WEB Запрос опций")
+	logAdd(MESS_INFO, "WEB Request options")
 
 	b, err := json.Marshal(options)
 	if err == nil {
@@ -443,7 +443,7 @@ func processApiOptionsSave(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	logAdd(MESS_INFO, "WEB Запрос сохранения опций")
+	logAdd(MESS_INFO, "WEB Request for saving options")
 
 	portsmtp := string(r.FormValue("portsmtp"))
 	loginsmtp := string(r.FormValue("loginsmtp"))
@@ -471,7 +471,7 @@ func processApiOptionsSave(w http.ResponseWriter, r *http.Request) {
 	handleOptions(w, r)
 }
 
-//общие функции
+//common functions
 func checkProfileAuth(w http.ResponseWriter, r *http.Request) *Profile {
 
 	user, pass, ok := r.BasicAuth()
@@ -481,13 +481,13 @@ func checkProfileAuth(w http.ResponseWriter, r *http.Request) *Profile {
 
 		if exist {
 			if value.(*Profile).Pass == pass {
-				//logAdd(MESS_INFO, "Аутентификация успешна " + user + "/"+ r.RemoteAddr)
+				//logAdd(MESS_INFO, "Authentication successful " + user + "/"+ r.RemoteAddr)
 				return value.(*Profile)
 			}
 		}
 	}
 
-	logAdd(MESS_ERROR, "Аутентификация профиля провалилась "+r.RemoteAddr)
+	logAdd(MESS_ERROR, "Profile authentication failed "+r.RemoteAddr)
 	w.Header().Set("WWW-Authenticate", "Basic")
 	http.Error(w, "auth req", http.StatusUnauthorized)
 	return nil
@@ -502,7 +502,7 @@ func checkAdminAuth(w http.ResponseWriter, r *http.Request) bool {
 		}
 	}
 
-	logAdd(MESS_ERROR, "Аутентификация админки провалилась "+r.RemoteAddr)
+	logAdd(MESS_ERROR, "Authentication admin failed "+r.RemoteAddr)
 	w.Header().Set("WWW-Authenticate", "Basic")
 	http.Error(w, "auth req", http.StatusUnauthorized)
 	return false

@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	logAdd(MESS_INFO, "Запускается сервер reVisit версии "+REVISIT_VERSION)
+	logAdd(MESS_INFO, "The reVisit version server is started "+REVISIT_VERSION)
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
@@ -27,21 +27,21 @@ func main() {
 		loadCounters()
 		loadProfiles()
 
-		go helperThread() //используем для периодических действий(сохранения и т.п.)
-		go httpServer()   //обработка веб запросов
-		go mainServer()   //обработка основных команд от клиентов и агентов
+		go helperThread() //we use for periodic actions (conservation, etc.)
+		go httpServer()   //web request processing
+		go mainServer()   //processing of main commands from clients and agents
 	}
 
 	if options.Mode != MASTER {
-		go dataServer() //обработка потоков данных от клиентов
+		go dataServer() //processing of data streams from clients
 	}
 
 	if options.Mode == MASTER {
-		go masterServer() //общаемся с агентами
+		go masterServer() //communicate with agents
 	}
 
 	if options.Mode == NODE {
-		go nodeClient() //клинет подключающийся к мастеру
+		go nodeClient() //clinches connecting to the master
 	}
 
 	var r string
@@ -49,5 +49,5 @@ func main() {
 		fmt.Scanln(&r)
 	}
 
-	logAdd(MESS_INFO, "Завершили работу")
+	logAdd(MESS_INFO, "Finished work")
 }

@@ -9,11 +9,11 @@ import (
 )
 
 const (
-	//REVISIT_VERSION - версия сервера или ноды, пока не используется
+	//REVISIT_VERSION - server version or node, not yet used
 	REVISIT_VERSION = "0.5"
 
-	//общие константы
-	CODE_LENGTH     = 64 //длина code
+	//common constants
+	CODE_LENGTH     = 64 //length code
 	PASSWORD_LENGTH = 14
 	FILE_PROFILES   = "profiles.list"
 	FILE_OPTIONS    = "options.cfg"
@@ -24,7 +24,7 @@ const (
 	MAX_LEN_ID_NODE = 8
 	LEN_SALT        = 16
 
-	//константы ожидания
+	//Waiting constants
 	WAIT_COUNT         = 30
 	WAIT_IDLE          = 500
 	WAIT_AFTER_CONNECT = 250
@@ -32,33 +32,33 @@ const (
 	WAIT_PING          = 10
 	WAIT_IDLE_AGENT    = 2
 
-	//виды сообщений логов
+	//types of log messages
 	MESS_ERROR  = 1
 	MESS_INFO   = 2
 	MESS_DETAIL = 3
 	MESS_FULL   = 4
 
-	//виды сообщений
-	TMESS_DEAUTH          = 0  //деаутентификация()
-	TMESS_VERSION         = 1  //запрос версии
-	TMESS_AUTH            = 2  //аутентификация(генерация pid)
-	TMESS_LOGIN           = 3  //вход в профиль
-	TMESS_NOTIFICATION    = 4  //сообщение клиент
-	TMESS_REQUEST         = 5  //запрос на подключение
-	TMESS_CONNECT         = 6  //запрашиваем подключение у клиента
-	TMESS_DISCONNECT      = 7  //сообщаем об отключении клиенту
-	TMESS_REG             = 8  //регистрация профиля
-	TMESS_CONTACT         = 9  //создание, редактирование, удаление
-	TMESS_CONTACTS        = 10 //запрос списка контактов
-	TMESS_LOGOUT          = 11 //выход из профиля
-	TMESS_CONNECT_CONTACT = 12 //запрос подключения к конакту из профиля
-	TMESS_STATUSES        = 13 //запрос всех статусов
-	TMESS_STATUS          = 14 //запрос статуса
-	TMESS_INFO_CONTACT    = 15 //запрос информации о клиенте
-	TMESS_INFO_ANSWER     = 16 //ответ на запрос информации
-	TMESS_MANAGE          = 17 //запрос на управление(перезагрузка, обновление, переустановка)
-	TMESS_PING            = 18 //проверка состояния подключения
-	TMESS_CONTACT_REVERSE = 19 //добавление себя в чужой профиль
+	//types of messages
+	TMESS_DEAUTH          = 0  //deauthentication ()
+	TMESS_VERSION         = 1  //version request
+	TMESS_AUTH            = 2  //Authentication (pid generation)
+	TMESS_LOGIN           = 3  //entrance to the profile
+	TMESS_NOTIFICATION    = 4  //message customer
+	TMESS_REQUEST         = 5  //connection request
+	TMESS_CONNECT         = 6  //we request connection from the client
+	TMESS_DISCONNECT      = 7  //we inform about disconnection to the client
+	TMESS_REG             = 8  //profile registration
+	TMESS_CONTACT         = 9  //creation, editing, deletion
+	TMESS_CONTACTS        = 10 //contact list request
+	TMESS_LOGOUT          = 11 //exit from the profile
+	TMESS_CONNECT_CONTACT = 12 //request to connect to a contact from the profile
+	TMESS_STATUSES        = 13 //request all statuses
+	TMESS_STATUS          = 14 //status request
+	TMESS_INFO_CONTACT    = 15 //requesting customer information
+	TMESS_INFO_ANSWER     = 16 //response to information request
+	TMESS_MANAGE          = 17 //request for management (reboot, update, reinstall)
+	TMESS_PING            = 18 //checking the connection status
+	TMESS_CONTACT_REVERSE = 19 //adding yourself to someone else's profile
 
 	TMESS_AGENT_DEAUTH      = 0
 	TMESS_AGENT_AUTH        = 1
@@ -76,7 +76,7 @@ const (
 
 var (
 
-	//опции по-умолчанию
+	//default options
 	options = Options{
 		MainServerPort: "65471",
 		DataServerPort: "65475",
@@ -91,7 +91,7 @@ var (
 		MasterPassword: "master",
 	}
 
-	//считаем всякую бесполезную информацию или нет
+	//consider any useless information or not
 	counterData struct {
 		currentPos time.Time
 
@@ -118,41 +118,41 @@ var (
 		mutex sync.Mutex
 	}
 
-	//меню веб интерфейса админки
+	//admin menu
 	menuAdmin = []itemMenu{
-		{"Логи", "/admin/logs"},
-		{"Настройки", "/admin/options"},
-		{"Ресурсы", "/admin/resources"},
-		{"Статистика", "/admin/statistics"},
+		{"Logs", "/admin/logs"},
+		{"Settings", "/admin/options"},
+		{"Resources", "/admin/resources"},
+		{"Statistics", "/admin/statistics"},
 		{"reVisit", "/resource/reVisit.exe"}}
 
-	//меню веб интерфейса профиля
+	//menu web interface profile
 	menuProfile = []itemMenu{
-		{"Профиль", "/profile/my"},
+		{"Profile", "/profile/my"},
 		{"reVisit", "/resource/reVisit.exe"}}
 
-	//максимальный уровень логов
+	//maximum log level
 	typeLog = MESS_FULL
 
-	//файл для хранения лога
+	//log file
 	logFile *os.File
 
-	//карта подключенных клиентов
+	//map of connected clients
 	clients sync.Map
 
-	//карта каналов для передачи данных
+	//channel map for data transmission
 	channels sync.Map
 
-	//карта учеток
+	//card reader
 	profiles sync.Map
 
-	//агенты обработки данных
+	//data processing agents
 	nodes sync.Map
 
-	//сокет до мастера
+	//socket to master
 	master *net.Conn
 
-	//текстовая расшифровка сообщений для логов
+	//text decryption of messages for logs
 	messLogText = []string{
 		"BLANK",
 		"ERROR",
@@ -160,7 +160,7 @@ var (
 		"DETAIL",
 		"FULL"}
 
-	//функции для обработки сообщений
+	//functions for processing messages
 	processing = []ProcessingMessage{
 		{TMESS_DEAUTH, nil},
 		{TMESS_VERSION, processVersion},
@@ -193,7 +193,7 @@ var (
 		{TMESS_AGENT_DEL_CONNECT, processAgentDelConnect},
 		{TMESS_AGENT_ADD_BYTES, processAgentAddBytes}}
 
-	//функции для обработки web api
+	//functions for processing web api
 	processingWeb = []ProcessingWeb{
 		{"defaultvnc", processApiDefaultVnc},
 		{"listvnc", processApiListVnc},
@@ -206,7 +206,7 @@ var (
 		{"reload", processApiReload},
 		{"options_get", processApiOptionsGet}}
 
-	//список доступных vnc клиентов и выбранный по-умолчанию
+	//list of available vnc clients and selected by default
 	defaultVnc = 0
 	arrayVnc   []VNC
 )
@@ -219,7 +219,7 @@ type dConn struct {
 	mutex   sync.Mutex
 }
 
-//информацияя о ноде
+//information about the node
 type Node struct {
 	Id   string
 	Name string
@@ -227,72 +227,72 @@ type Node struct {
 	Conn *net.Conn
 }
 
-//обработчик для веб запроса
+//handler for web request
 type ProcessingWeb struct {
 	Make       string
 	Processing func(w http.ResponseWriter, r *http.Request)
 }
 
-//обработчик для запросов агенту
+//handler for agent requests
 type ProcessingAgent struct {
 	TMessage   int
 	Processing func(message Message, conn *net.Conn, curNode *Node, id string)
 }
 
-//обработчик для сообщений
+//message handler
 type ProcessingMessage struct {
 	TMessage   int
 	Processing func(message Message, conn *net.Conn, curClient *Client, id string)
 }
 
-//тип для сообщения
+//type for message
 type Message struct {
 	TMessage int
 	Messages []string
 }
 
-//сохраняемые опции
+//saved options
 type Options struct {
-	//настройки smtp сервера
+	//smtp server settings
 	ServerSMTP string
 	PortSMTP   string
 	LoginSMTP  string
 	PassSMTP   string
 
-	//реквизиты сервера
+	//server requisites
 	MainServerPort string
 
-	//реквизиты сервер
+	//details of the server
 	DataServerPort string
 
-	//реквизиты веб сервера
+	//web server details
 	HttpServerPort string
 
-	//размер буфера для операций с сокетами
+	//buffer size for operations with sockets
 	SizeBuff int
 
-	//учетка для админ панели
+	//account for admin panel
 	AdminLogin string
 	AdminPass  string
 
-	//режим работы экземпляра сервера
+	//server instance operation mode
 	Mode int
 
-	//мастер сервер, если он нужен
+	//master server if you need it
 	MasterServer   string
 	MasterPort     string
 	MasterPassword string
 
-	//очевидно что флаг для отладки
+	//obviously the flag for debugging
 	FDebug bool
 }
 
-//информация о внц и основные команды для управления им
+//information about the company and the main commands for managing it
 type VNC struct {
 	FileServer string
 	FileClient string
 
-	//это команды используем для старта под админскими правами(обычно это создание сервиса)
+	//this command is used to start under admin rights (usually this is the creation of a service)
 	CmdStartServer   string
 	CmdStopServer    string
 	CmdInstallServer string
@@ -300,7 +300,7 @@ type VNC struct {
 	CmdConfigServer  string
 	CmdManageServer  string
 
-	//это комнады используем для старта без админских прав
+	//this room is used for start without admin rights
 	CmdStartServerUser   string
 	CmdStopServerUser    string
 	CmdInstallServerUser string
@@ -308,7 +308,7 @@ type VNC struct {
 	CmdConfigServerUser  string
 	CmdManageServerUser  string
 
-	//комнды для vnc клиента
+	//for vnc client
 	CmdStartClient   string
 	CmdStopClient    string
 	CmdInstallClient string
@@ -323,13 +323,13 @@ type VNC struct {
 	Description   string
 }
 
-//меню для веба
+//menu for the web
 type itemMenu struct {
 	Capt string
 	Link string
 }
 
-//тип для клиента
+//customer type
 type Client struct {
 	Serial  string
 	Pid     string
@@ -341,10 +341,10 @@ type Client struct {
 	Conn *net.Conn
 	Code string //for connection
 
-	profiles sync.Map //профили которые содержат этого клиента в контактах(используем для отправки им информации о своем статусе)
+	profiles sync.Map //profiles that contain this client in contacts (we use to send them information about their status)
 }
 
-//тип для профиля
+//type for profile
 type Profile struct {
 	Email string
 	Pass  string
@@ -352,21 +352,21 @@ type Profile struct {
 	Contacts *Contact
 	mutex    sync.Mutex
 
-	clients sync.Map //клиенты которые авторизовались в этот профиль(используем для отправки им информации о статусе или изменений контактов)
+	clients sync.Map //clients who are authorized in this profile (we use to send them information about the status or changes of contacts)
 
-	//всякая информация
+	//any information
 	Capt string
 	Tel  string
 	Logo string
 }
 
-//тип для контакта
+//type for contact
 type Contact struct {
 	Id      int
 	Caption string
-	Type    string //cont - контакт, fold - папка
+	Type    string //account - contact, fold - folder
 	Pid     string
-	Digest  string //но тут digest
+	Digest  string //but digest here
 	Salt    string
 
 	Inner *Contact

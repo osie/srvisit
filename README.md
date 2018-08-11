@@ -1,6 +1,6 @@
 # srvisit
 [![Go Report Card](https://goreportcard.com/badge/github.com/vaizmanai/srvisit)](https://goreportcard.com/report/github.com/vaizmanai/srvisit)
 
-Сервер для менеджера клиентов VNC, хранит контакты, передает трансляции позволяя обойти nat.
+The server for the VNC client manager, stores contacts, transmits broadcasts allowing you to bypass nat.
 
-Клиентская часть доступна на http://rvisit.net
+The client part is available on http://rvisit.net

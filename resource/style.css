@@ -15,13 +15,13 @@ img {
 
 .content {
 	width: 1000px;
-	border: 0px solid;
+	border: 0 solid;
 	margin: auto;
 	margin-top: 30px;
 }
 
 .desc {
-	border: 0px none;
+	border: 0 none;
 }
 
 tr {
@@ -30,7 +30,7 @@ tr {
 }
 
 td{
-	border: 0px solid;
+	border: 0 solid;
 	text-align: right;
 }
 
@@ -215,7 +215,7 @@ a:hover{
 
 .dialog{
 	position: absolute;
-	top: 0px;
+	top: 0;
 	width: 370px;
 	height: 100%;
 	background-color: rgba(172, 172, 172, 0.7);
@@ -223,7 +223,7 @@ a:hover{
 }
 
 .dialog>div{
-	padding: 0px;
+	padding: 0;
 	padding-top: 50px;
 	padding-left: 25px;
 	padding-right: 25px;
@@ -268,10 +268,10 @@ a:hover{
 	width: 100%;
 	min-width: 100px;
 	text-align: left;
-	border: 0px;
+	border: 0;
 }
 .estate td{
-	border: 0px;
+	border: 0;
 }
 
 .dialog .estate select{
@@ -346,7 +346,7 @@ a:hover{
 }
 
 .profile p {
-	margin: 5px 0px;
+	margin: 5px 0;
 	color: #333333;
 }
 
@@ -365,7 +365,7 @@ a:hover{
 }
 
 .option p {
-	margin: 5px 0px;
+	margin: 5px 0;
 	color: #333333;
 }
 

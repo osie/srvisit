@@ -14,14 +14,14 @@ import (
 )
 
 func helperThread() {
-	logAdd(MESS_INFO, "helperThread запустился")
+	logAdd(MESS_INFO, "helperThread started")
 	for true {
 		saveProfiles()
 		swiftCounter()
 
 		time.Sleep(time.Second * WAIT_HELPER_CYCLE)
 	}
-	logAdd(MESS_INFO, "helperThread закончил работу")
+	logAdd(MESS_INFO, "helperThread finished")
 }
 
 func getPid(serial string) string {
@@ -31,7 +31,7 @@ func getPid(serial string) string {
 		a = a * uint64(f)
 	}
 
-	//todo факир был пьян, но пока и так сойдет
+	//todo fakir was drunk, but so far and so come down
 	b := a % 999
 	if b == 0 {
 		b = 1
@@ -71,7 +71,7 @@ func logAdd(TMessage int, Messages string) {
 			logFile, _ = os.Create(LOG_NAME)
 		}
 
-		//todo наверное стоит убрать, но пока мешает пинг в логах
+		//todo probably worth removing, but so far prevents the ping in the logs
 		if strings.Contains(Messages, "buff (31): {\"TMessage\":18,\"Messages\":null}") || strings.Contains(Messages, "{18 []}") {
 			return
 		}
@@ -110,7 +110,7 @@ func randInt(min int, max int) int {
 
 func sendMessage(conn *net.Conn, TMessage int, Messages ...string) bool {
 	if conn == nil {
-		logAdd(MESS_ERROR, "нет сокета для отправки")
+		logAdd(MESS_ERROR, "no socket to send")
 		return false
 	}
 
@@ -253,13 +253,13 @@ func saveProfiles() {
 				os.Rename(FILE_PROFILES+".tmp", FILE_PROFILES)
 			} else {
 				f.Close()
-				logAdd(MESS_ERROR, "Не удалось сохранить профили: "+fmt.Sprint(err))
+				logAdd(MESS_ERROR, "Failed to save profiles: "+fmt.Sprint(err))
 			}
 		} else {
-			logAdd(MESS_ERROR, "Не удалось сохранить профили: "+fmt.Sprint(err))
+			logAdd(MESS_ERROR, "Failed to save profiles: "+fmt.Sprint(err))
 		}
 	} else {
-		logAdd(MESS_ERROR, "Не удалось сохранить профили: "+fmt.Sprint(err))
+		logAdd(MESS_ERROR, "Failed to save profiles: "+fmt.Sprint(err))
 	}
 }
 
@@ -277,13 +277,13 @@ func loadProfiles() {
 					profiles.Store(list[i].Email, &list[i])
 				}
 			} else {
-				logAdd(MESS_ERROR, "Не получилось загрузить профили: "+fmt.Sprint(err))
+				logAdd(MESS_ERROR, "Can not load profiles: "+fmt.Sprint(err))
 			}
 		} else {
-			logAdd(MESS_ERROR, "Не получилось загрузить профили: "+fmt.Sprint(err))
+			logAdd(MESS_ERROR, "Can not load profiles: "+fmt.Sprint(err))
 		}
 	} else {
-		logAdd(MESS_ERROR, "Не получилось загрузить профили: "+fmt.Sprint(err))
+		logAdd(MESS_ERROR, "Can not load profiles: "+fmt.Sprint(err))
 	}
 }
 
@@ -300,13 +300,13 @@ func saveOptions() {
 				os.Rename(FILE_OPTIONS+".tmp", FILE_OPTIONS)
 			} else {
 				f.Close()
-				logAdd(MESS_ERROR, "Не удалось сохранить настройки: "+fmt.Sprint(err))
+				logAdd(MESS_ERROR, "Failed to save settings: "+fmt.Sprint(err))
 			}
 		} else {
-			logAdd(MESS_ERROR, "Не удалось сохранить настройки: "+fmt.Sprint(err))
+			logAdd(MESS_ERROR, "Failed to save settings: "+fmt.Sprint(err))
 		}
 	} else {
-		logAdd(MESS_ERROR, "Не удалось сохранить настройки: "+fmt.Sprint(err))
+		logAdd(MESS_ERROR, "Failed to save settings: "+fmt.Sprint(err))
 	}
 }
 
@@ -318,13 +318,13 @@ func loadOptions() {
 		if err == nil {
 			err = json.Unmarshal(b, &options)
 			if err != nil {
-				logAdd(MESS_ERROR, "Не получилось загрузить настройки: "+fmt.Sprint(err))
+				logAdd(MESS_ERROR, "Unable to load settings: "+fmt.Sprint(err))
 			}
 		} else {
-			logAdd(MESS_ERROR, "Не получилось загрузить настройки: "+fmt.Sprint(err))
+			logAdd(MESS_ERROR, "Unable to load settings: "+fmt.Sprint(err))
 		}
 	} else {
-		logAdd(MESS_ERROR, "Не получилось загрузить настройки: "+fmt.Sprint(err))
+		logAdd(MESS_ERROR, "Unable to load settings: "+fmt.Sprint(err))
 	}
 }
 
@@ -342,13 +342,13 @@ func loadOptions() {
 //				os.Rename(FILE_VNCLIST + ".tmp", FILE_VNCLIST)
 //			} else {
 //				f.Close()
-//				logAdd(MESS_ERROR, "Не удалось сохранить список VNC: " + fmt.Sprint(err))
+//				logAdd(MESS_ERROR, "Failed to save VNC list: " + fmt.Sprint(err))
 //			}
 //		} else {
-//			logAdd(MESS_ERROR, "Не удалось сохранить список VNC: "+fmt.Sprint(err))
+//			logAdd(MESS_ERROR, "Failed to save VNC list: "+fmt.Sprint(err))
 //		}
 //	} else {
-//		logAdd(MESS_ERROR, "Не удалось сохранить список VNC: " + fmt.Sprint(err))
+//		logAdd(MESS_ERROR, "Failed to save VNC list: " + fmt.Sprint(err))
 //	}
 //}
 
@@ -363,22 +363,22 @@ func loadVNCList() {
 			if err == nil {
 				defaultVnc = 0
 			} else {
-				logAdd(MESS_ERROR, "Не получилось загрузить список VNC: "+fmt.Sprint(err))
+				logAdd(MESS_ERROR, "It was not possible to load the VNC list: "+fmt.Sprint(err))
 			}
 		} else {
-			logAdd(MESS_ERROR, "Не получилось загрузить список VNC: "+fmt.Sprint(err))
+			logAdd(MESS_ERROR, "It was not possible to load the VNC list: "+fmt.Sprint(err))
 		}
 	} else {
-		logAdd(MESS_ERROR, "Не получилось загрузить список VNC: "+fmt.Sprint(err))
+		logAdd(MESS_ERROR, "It was not possible to load the VNC list: "+fmt.Sprint(err))
 	}
 }
 
-//пробежимся по профилям, найдем где есть контакты с нашим пид и добавим этот профиль нам
+//go over profiles, find where there are contacts with our pid and add this profile to us
 func addClientToProfile(client *Client) {
 	profiles.Range(func(key interface{}, value interface{}) bool {
 		profile := value.(*Profile)
 		if addClientToContacts(profile.Contacts, client, profile) {
-			//если мы есть хоть в одном конакте этого профиля, пробежимся по ним и отправим свой статус
+			//if we have at least one of the profiles of this profile, we will go over them and send our status
 			profile.clients.Range(func(key interface{}, value interface{}) bool {
 				curClient := value.(*Client)
 				sendMessage(curClient.Conn, TMESS_STATUS, cleanPid(client.Pid), "1")
@@ -389,7 +389,7 @@ func addClientToProfile(client *Client) {
 	})
 }
 
-//пробежимся по всем контактам и если есть совпадение, то добавим ссылку на профиль этому клиенту
+//run through all contacts and if there is a match, then we will add a link to the profile to this client
 func addClientToContacts(contact *Contact, client *Client, profile *Profile) bool {
 	res := false
 
@@ -441,14 +441,14 @@ func saveCounters() {
 		if err == nil {
 			n, err := f.Write(b)
 			if n != len(b) || err != nil {
-				logAdd(MESS_ERROR, "Не удалось сохранить счетчики: "+fmt.Sprint(err))
+				logAdd(MESS_ERROR, "Could not save counters: "+fmt.Sprint(err))
 			}
 			f.Close()
 		} else {
-			logAdd(MESS_ERROR, "Не удалось сохранить счетчики: "+fmt.Sprint(err))
+			logAdd(MESS_ERROR, "Could not save counters: "+fmt.Sprint(err))
 		}
 	} else {
-		logAdd(MESS_ERROR, "Не удалось сохранить счетчики: "+fmt.Sprint(err))
+		logAdd(MESS_ERROR, "Could not save counters: "+fmt.Sprint(err))
 	}
 }
 
@@ -462,13 +462,13 @@ func loadCounters() {
 		if err == nil {
 			err = json.Unmarshal(b, &counterData)
 			if err != nil {
-				logAdd(MESS_ERROR, "Не получилось загрузить счетчики: "+fmt.Sprint(err))
+				logAdd(MESS_ERROR, "Could not load counters: "+fmt.Sprint(err))
 			}
 		} else {
-			logAdd(MESS_ERROR, "Не получилось загрузить счетчики: "+fmt.Sprint(err))
+			logAdd(MESS_ERROR, "Could not load counters: "+fmt.Sprint(err))
 		}
 	} else {
-		logAdd(MESS_ERROR, "Не получилось загрузить счетчики: "+fmt.Sprint(err))
+		logAdd(MESS_ERROR, "Could not load counters: "+fmt.Sprint(err))
 	}
 
 	counterData.CounterClients[int(counterData.currentPos.Hour())] = 0
@@ -565,7 +565,7 @@ func swiftCounter() {
 }
 
 func cleanPid(pid string) string {
-	//todo может потом стоит сюда добавить удаление и других символов
+	//todo can then be added here to delete and other characters
 	return strings.Replace(pid, ":", "", -1)
 }
 
